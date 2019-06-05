@@ -158,7 +158,6 @@ app.post('/schedule/update', (req, res) => {
         res.redirect('/schedule/update/updated/success');
 
     } else {
-        res.setHeader("Access-Control-Allow-Origin", "*")
         res.end("{\"message\": \"1420788507\"}");
     }
 
