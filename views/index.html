@@ -1,0 +1,317 @@
+<html>
+    <head>
+        <title>Schedule Update</title>
+
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"> </script>
+    </head>
+
+    <body style="background-color: darkblue; color:wheat">
+
+        <form>
+        <header align="center">
+            <label for="bidsec">Batch ID and Section:</label>
+            <input type="text" name="bidsec" id="bidsec"/>
+        </header>
+
+        <div>
+            <label for="schedule-type">Schedule type: </label>
+            <select name="schedule-type" id="schedule-type">
+                <option value=""></option>
+                <option value="tentative">Tentative</option>
+                <option value="revised">Revised</option>
+                <option value="updated">Updated</option>
+                <option value="final">Final</option>
+            </select>
+                
+            <table width="100%" style="margin-top: 20px; background-color:darkblue;color: white" border="2">
+                <tr>
+                    <td></td>
+                    <th>Monday</th>
+                    <th>Teusday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                </tr>
+                <tr>
+                    <th>8:00 - 10:00</th>
+                    <td>
+                        Subject: <input type="text" name="mondayFirstClass" id="mondayFirstClass"><br>
+                        Room: <input type="text" name="mondayFirstRoom" id="mondayFirstRoom">
+                    </td>
+
+                    <td>
+                        Subject: <input type="text" name="tuesdayFirstClass" id="tuesdayFirstClass"><br>
+                        Room: <input type="text" name="tuesdayFirstRoom" id="tuesdayFirstRoom">
+                    </td>
+                    
+                    <td>
+                        Subject: <input type="text" name="wednesdayFirstClass" id="wednesdayFirstClass"><br>
+                        Room: <input type="text" name="wednesdayFirstRoom" id="wednesdayFirstRoom">
+                    </td>
+                    
+                    <td>
+                        Subject: <input type="text" name="thursdayFirstClass" id="thursdayFirstClass"><br>
+                        Room: <input type="text" name="thursdayFirstRoom" id="thursdayFirstRoom">
+                    </td>
+                    
+                    <td>
+                        Subject: <input type="text" name="fridayFirstClass" id="fridayFirstClass"><br>
+                        Room: <input type="text" name="fridayFirstRoom" id="fridayFirstRoom">
+                    </td>
+                    
+                    <td>
+                        Subject: <input type="text" name="saturdayFirstClass" id="saturdayFirstClass"><br>
+                        Room: <input type="text" name="saturdayFirstRoom" id="saturdayFirstRoom">
+                    </td>
+                </tr>
+                <tr>
+                    <th>10:00 - 12:00</th>
+                    <td>
+                        Subject:<input type="text" name="mondaySecondClass" id="mondaySecondClass"><br>
+                        Room:<input type="text" name="mondaySecondRoom" id="mondaySecondRoom">
+                    </td>
+                    <td>
+                        Subject:<input type="text" name="tuesdaySecondClass" id="tuesdaySecondClass"><br>
+                        Room:<input type="text" name="tuesdaySecondRoom" id="tuesdaySecondRoom">
+                    </td>
+                    <td>
+                        Subject:<input type="text" name="wednesdaySecondClass" id="wednesdaySecondClass"><br>
+                        Room:<input type="text" name="wednesdaySecondRoom" id="wednesdaySecondRoom">
+                    </td>
+                    <td>
+                        Subject:<input type="text" name="thursdaySecondClass" id="thursdaySecondClass"><br>
+                        Room:<input type="text" name="thursdaySecondRoom" id="thursdaySecondRoom">
+                    </td>
+                    <td>
+                        Subject:<input type="text" name="fridaySecondClass" id="fridaySecondClass"><br>
+                        Room:<input type="text" name="fridaySecondRoom" id="fridaySecondRoom">
+                    </td>
+                    <td>
+                        Subject:<input type="text" name="saturdaySecondClass" id="saturdaySecondClass"><br>
+                        Room:<input type="text" name="saturdaySecondRoom" id="saturdaySecondRoom">
+                    </td>
+                </tr>
+                <tr>
+                    <th>1:30 - 3:30</th>
+                    <td>
+                        Subject: <input type="text" name="mondayThirdClass" id="mondayThirdClass"><br>
+                        Room: <input type="text" name="mondayThirdRoom" id="mondayThirdRoom">
+                    </td>
+                    <td>
+                        Subject: <input type="text" name="tuesdayThirdClass" id="tuesdayThirdClass"><br>
+                        Room: <input type="text" name="tuesdayThirdRoom" id="tuesdayThirdRoom">
+                    </td>
+                    <td>
+                        Subject: <input type="text" name="wednesdayThirdClass" id="wednesdayThirdClass"><br>
+                        Room: <input type="text" name="wednesdayThirdRoom" id="wednesdayThirdRoom">
+                    </td>
+                    <td>
+                        Subject: <input type="text" name="thursdayThirdClass" id="thursdayThirdClass"><br>
+                        Room: <input type="text" name="thursdayThirdRoom" id="thursdayThirdRoom">
+                    </td>
+                    <td>
+                        Subject: <input type="text" name="fridayThirdClass" id="fridayThirdClass"><br>
+                        Room: <input type="text" name="fridayThirdRoom" id="fridayThirdRoom">
+                    </td>
+                    <td>
+                        Subject: <input type="text" name="saturdayThirdClass" id="saturdayThirdClass"><br>
+                        Room: <input type="text" name="saturdayThirdRoom" id="saturdayThirdRoom">
+                    </td>
+                </tr>
+                <tr>
+                    <th>3:30 - 5:30</th>
+                    <td>
+                        Subject: <input type="text" name="mondayFourthClass" id="mondayFourthClass"><br>
+                        Room: <input type="text" name="mondayFourthRoom" id="mondayFourthRoom">
+                    </td>
+                    <td>
+                        Subject: <input type="text" name="tuesdayFourthClass" id="tuesdayFourthClass"><br>
+                        Room: <input type="text" name="tuesdayFourthRoom" id="tuesdayFourthRoom">
+                    </td>
+                    <td>
+                        Subject: <input type="text" name="wednesdayFourthClass" id="wednesdayFourthClass"><br>
+                        Room: <input type="text" name="wednesdayFourthRoom" id="wednesdayFourthRoom">
+                    </td>
+                    <td>
+                        Subject: <input type="text" name="thursdayFourthClass" id="thursdayFourthClass"><br>
+                        Room: <input type="text" name="thursdayFourthRoom" id="thursdayFourthRoom">
+                    </td>
+                    <td>
+                        Subject: <input type="text" name="fridayFourthClass" id="fridayFourthClass"><br>
+                        Room: <input type="text" name="fridayFourthRoom" id="fridayFourthRoom">
+                    </td>
+                    <td>
+                        Subject: <input type="text" name="saturdayFourthClass" id="saturdayFourthClass"><br>
+                        Room: <input type="text" name="saturdayFourthRoom" id="saturdayFourthRoom">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <footer align="center" style="margin-top: 20px">
+            <label for="password">Enter the admin password: </label>
+            <input type="password" name="password-input" id="password" value=""/>
+            <input type="button" value="Sumbit Update" onclick="sendDatatoServer()"/>
+        </footer>
+
+        <script>
+        
+        function checkStuff(){
+            var st = document.getElementById("bidsec");
+            console.log(st.value);
+            console.log($("#schedule-type :selected").val());
+            console.log($("#password").val());
+            var dek = confirm("You sure you wanna do an upload?")
+            if (dek){
+                alert("The upload is be denk dank");
+            } else {
+                alert("nvm then you serf");
+            }
+        }
+
+        function sendDatatoServer(){
+            var isBatchEmpty = $("#bidsec").val() == "";
+            var isSchedSelectionValid = $("#schedule-type :selected").val() != "";
+            if (!isBatchEmpty && isSchedSelectionValid){
+                var scheduleType = $("#schedule-type :selected").val();
+
+                var adminPass = $("#password").val();
+
+                var mondayFirstClass = $("#mondayFirstClass").val();
+                var tuesdayFirstClass = $("#tuesdayFirstClass").val();
+                var wednesdayFirstClass = $("#wednesdayFirstClass").val();
+                var thursdayFirstClass = $("#thursdayFirstClass").val();
+                var fridayFirstClass = $("#fridayFirstClass").val();
+                var saturdayFirstClass = $("#saturdayFirstClass").val();
+                var mondaySecondClass = $("#mondaySecondClass").val();
+                var tuesdaySecondClass = $("#tuesdaySecondClass").val();
+                var wednesdaySecondClass = $("#wednesdaySecondClass").val();
+                var thursdaySecondClass = $("#thursdaySecondClass").val();
+                var fridaySecondClass = $("#fridaySecondClass").val();
+                var saturdaySecondClass = $("#saturdaySecondClass").val();
+                var mondayThirdClass = $("#mondayThirdClass").val();
+                var tuesdayThirdClass = $("#tuesdayThirdClass").val();
+                var wednesdayThirdClass = $("#wednesdayThirdClass").val();
+                var thursdayThirdClass = $("#thursdayThirdClass").val();
+                var fridayThirdClass = $("#fridayThirdClass").val();
+                var saturdayThirdClass = $("#saturdayThirdClass").val();
+                var mondayFourthClass = $("#mondayFourthClass").val();
+                var tuesdayFourthClass = $("#tuesdayFourthClass").val();
+                var wednesdayFourthClass = $("#wednesdayFourthClass").val();
+                var thursdayFourthClass = $("#thursdayFourthClass").val();
+                var fridayFourthClass = $("#fridayFourthClass").val();
+                var saturdayFourthClass = $("#saturdayFourthClass").val();
+
+                var mondayFirstRoom = $("#mondayFirstRoom").val();
+                var tuesdayFirstRoom = $("#tuesdayFirstRoom").val();
+                var wednesdayFirstRoom = $("#wednesdayFirstRoom").val();
+                var thursdayFirstRoom = $("#thursdayFirstRoom").val();
+                var fridayFirstRoom = $("#fridayFirstRoom").val();
+                var saturdayFirstRoom = $("#saturdayFirstRoom").val();
+                var mondaySecondRoom = $("#mondaySecondRoom").val();
+                var tuesdaySecondRoom = $("#tuesdaySecondRoom").val();
+                var wednesdaySecondRoom = $("#wednesdaySecondRoom").val();
+                var thursdaySecondRoom = $("#thursdaySecondRoom").val();
+                var fridaySecondRoom = $("#fridaySecondRoom").val();
+                var saturdaySecondRoom = $("#saturdaySecondRoom").val();
+                var mondayThirdRoom = $("#mondayThirdRoom").val();
+                var tuesdayThirdRoom = $("#tuesdayThirdRoom").val();
+                var wednesdayThirdRoom = $("#wednesdayThirdRoom").val();
+                var thursdayThirdRoom = $("#thursdayThirdRoom").val();
+                var fridayThirdRoom = $("#fridayThirdRoom").val();
+                var saturdayThirdRoom = $("#saturdayThirdRoom").val();
+                var mondayFourthRoom = $("#mondayFourthRoom").val();
+                var tuesdayFourthRoom = $("#tuesdayFourthRoom").val();
+                var wednesdayFourthRoom = $("#wednesdayFourthRoom").val();
+                var thursdayFourthRoom = $("#thursdayFourthRoom").val();
+                var fridayFourthRoom = $("#fridayFourthRoom").val();
+                var saturdayFourthRoom = $("#saturdayFourthRoom").val();
+
+                var confirmDialog = confirm("Are you sure you want to upload the schedule for " + $('#bidsec').val());
+
+                if (confirmDialog){
+                    $.post('https://c-sched-fmpgykdxte.now.sh/schedule/update', {
+
+                        bidsec: $("#bidsec").val(),
+
+                        password: adminPass,
+
+                        scheduleType: scheduleType,
+
+                        mondayFirstClass: mondayFirstClass,
+                        mondayFirstRoom: mondayFirstRoom,
+                        tuesdayFirstClass: tuesdayFirstClass,
+                        tuesdayFirstRoom: tuesdayFirstRoom,
+                        wednesdayFirstClass: wednesdayFirstClass,
+                        wednesdayFirstRoom: wednesdayFirstRoom,
+                        thursdayFirstClass: thursdayFirstClass,
+                        thursdayFirstRoom: thursdayFirstRoom,
+                        fridayFirstClass: fridayFirstClass,
+                        fridayFirstRoom: fridayFirstRoom,
+                        saturdayFirstClass: saturdayFirstClass,
+                        saturdayFirstRoom: saturdayFirstRoom,
+                        mondaySecondClass: mondaySecondClass,
+                        mondaySecondRoom: mondaySecondRoom,
+                        tuesdaySecondClass: tuesdaySecondClass,
+                        tuesdaySecondRoom: tuesdaySecondRoom,
+                        wednesdaySecondClass: wednesdaySecondClass,
+                        wednesdaySecondRoom: wednesdaySecondRoom,
+                        thursdaySecondClass: thursdaySecondClass,
+                        thursdaySecondRoom: thursdaySecondRoom,
+                        fridaySecondClass: fridaySecondClass,
+                        fridaySecondRoom: fridaySecondRoom,
+                        saturdaySecondClass: saturdaySecondClass,
+                        saturdaySecondRoom: saturdaySecondRoom,
+                        mondayThirdClass: mondayThirdClass,
+                        mondayThirdRoom: mondayThirdRoom,
+                        tuesdayThirdClass: tuesdayThirdClass,
+                        tuesdayThirdRoom: tuesdayThirdRoom,
+                        wednesdayThirdClass: wednesdayThirdClass,
+                        wednesdayThirdRoom: wednesdayThirdRoom,
+                        thursdayThirdClass: thursdayThirdClass,
+                        thursdayThirdRoom: thursdayThirdRoom,
+                        fridayThirdClass: fridayThirdClass,
+                        fridayThirdRoom: fridayThirdRoom,
+                        saturdayThirdClass: saturdayThirdClass,
+                        saturdayThirdRoom: saturdayThirdRoom,
+                        mondayFourthClass: mondayFourthClass,
+                        mondayFourthRoom: mondayFourthRoom,
+                        tuesdayFourthClass: tuesdayFourthClass,
+                        tuesdayFourthRoom: tuesdayFourthRoom,
+                        wednesdayFourthClass: wednesdayFourthClass,
+                        wednesdayFourthRoom: wednesdayFourthRoom,
+                        thursdayFourthClass: thursdayFourthClass,
+                        thursdayFourthRoom: thursdayFourthRoom,
+                        fridayFourthClass: fridayFourthClass,
+                        fridayFourthRoom: fridayFourthRoom,
+                        saturdayFourthClass: saturdayFourthClass,
+                        saturdayFourthRoom: saturdayFourthRoom
+
+                    }, (data) => {
+
+                        console.log(data);
+                        var msgData = JSON.parse(data);
+                        if (msgData.message == 1420788507){
+                            alert("Wrong password is entered!");
+                            $("#password").val("");
+                        } else {
+                            alert("Schedule updated");
+                        }
+
+                    });
+                } else {
+                    //DO NOTHING
+                }
+                
+            } else {
+                if (isBatchEmpty) alert("You need to enter the batch!");
+                else if (!isSchedSelectionValid) alert("You need to select a valid schedule type!");
+            }
+        }
+
+        </script>
+
+        </form>
+    </body>
+</html>

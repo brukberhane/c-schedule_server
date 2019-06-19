@@ -2,6 +2,16 @@ const app = require('express')();
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
+const ftpClient = require('ftp-client');
+
+var client = new ftpClient({
+    host: 'ftp.drivehq.com',
+    user: 'brukberhane',
+    password: 'bruk@123456'
+});
+client.connect(() => {
+    console.log('connected the ftp server');
+});
 
 const port = process.env.PORT || 6969;
 
@@ -17,14 +27,30 @@ app.get('/schedule/get/:bIDSec', (req, res) => {
         message: "OK"
     };
 
-    var schedFile = path.join(__dirname, "/schedules/" + bIDSec + ".json");
+    // var schedFile = path.join(__dirname, "/schedules/" + bIDSec + ".json");
 
-    if (fs.existsSync(schedFile)){
-        data.schedule = require(schedFile);
-        res.send(JSON.stringify(data)).end();
-    } else {
-        res.end(`{\"message\":\"Not Found\"}`)
-    }
+    // if (fs.existsSync(schedFile)){
+    //     data.schedule = require(schedFile);
+    //     res.send(JSON.stringify(data)).end();
+    // } else {
+    //     res.end(`{\"message\":\"Not Found\"}`)
+    // }
+    client.ftp.get(bIDSec + '.json', (err, astream) => {
+        if (err) {
+            console.log(err);
+            res.end(`{\"message": \"Not Found\"}`);
+        } else {
+            var  results = "";
+            astream.on('data', chunk => results += chunk);
+            astream.on('end', () => {
+                console.log(results);
+                data.schedule = JSON.parse(results);
+                res.send(JSON.stringify(data)).end();
+            });
+        }
+
+    })
+
 });
 
 app.post('/schedule/update', (req, res) => {
@@ -33,7 +59,7 @@ app.post('/schedule/update', (req, res) => {
 
     console.log("Connected!\nPassword entered: " + password);
 
-    if (password == "QVJsAsFV"){
+    if (password == "M3kk0HzAfFvjdkBwXj"){
         var schedule = {
             scheduleType : req.body.scheduleType,
 
@@ -116,7 +142,7 @@ app.post('/schedule/update', (req, res) => {
                 },
                 secondClass: {
                     title: req.body.fridaySecondClass,
-                    room: req.body.mondaySecondRoom
+                    room: req.body.fridaySecondRoom
                 },
                 thirdClass: {
                     title: req.body.fridayThirdClass,
@@ -147,13 +173,20 @@ app.post('/schedule/update', (req, res) => {
             }
         }
 
-        var fileLocation = path.join(__dirname, "/schedules/" + req.body.bidsec + ".json");
+        //TODO: Probably remove this code because it's now redundant.
+        // var fileLocation = path.join(__dirname, "/schedules/" + req.body.bidsec + ".json");
 
-        fs.writeFile(fileLocation, JSON.stringify(schedule), (err) => {
-            if (err) return console.log(err);
+        // fs.writeFile(fileLocation, JSON.stringify(schedule), (err) => {
+        //     if (err) return console.log(err);
 
-            console.log("Schedule for Batch:"+req.body.bidsec+" updated.");
+        //     console.log("Schedule for Batch:"+req.body.bidsec+" updated.");
+        // })
+
+        client.ftp.put(JSON.stringify(schedule), req.body.bidsec + '.json', (err) => {
+            if (err) console.log(err);
+            console.log("Schedule for Batch:"+req.body.bidsec+" uploaded/updated to the ftp server");
         })
+        
 
         res.redirect('/schedule/update/updated/success');
 
@@ -166,6 +199,10 @@ app.post('/schedule/update', (req, res) => {
 app.get('/schedule/update/updated/success', (req, res) => {
     res.end("<html> <head><title>Update/Add Success! </title></head>  <body> <h1> Successfully updated the the schedule!");
 });
+
+app.get('/schedule/update/interface/', (req, res) => {
+    res.sendFile(path.join(__dirname, "/views/index.html"))
+})
 
 app.set('port', port);
 
