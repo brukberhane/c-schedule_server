@@ -206,6 +206,6 @@ app.get('/schedule/update/interface/', (req, res) => {
 
 app.set('port', port);
 
-app.listen(6969, () => {
+app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
 });
