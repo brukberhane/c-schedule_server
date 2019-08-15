@@ -1,8 +1,10 @@
 const app = require('express')();
 const bodyParser = require('body-parser');
 const path = require('path');
-const fs = require('fs');
+// const fs = require('fs');
+const csv = require('csvtojson');
 const ftpClient = require('ftp-client');
+const formidable = require('formidable');
 
 var client = new ftpClient({
     host: 'ftp.drivehq.com',
@@ -16,7 +18,7 @@ client.connect(() => {
 const port = process.env.PORT || 6969;
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true}));
+app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/schedule/get/:bIDSec', (req, res) => {
 
@@ -27,182 +29,420 @@ app.get('/schedule/get/:bIDSec', (req, res) => {
         message: "OK"
     };
 
-    // var schedFile = path.join(__dirname, "/schedules/" + bIDSec + ".json");
+    client.ftp.cwd("schedules", (err, currDir) => {
+        if (err) console.log(err);
+        console.log(currDir);
 
-    // if (fs.existsSync(schedFile)){
-    //     data.schedule = require(schedFile);
-    //     res.send(JSON.stringify(data)).end();
-    // } else {
-    //     res.end(`{\"message\":\"Not Found\"}`)
-    // }
-    client.ftp.get(bIDSec + '.json', (err, astream) => {
-        if (err) {
-            console.log(err);
-            res.end(`{\"message": \"Not Found\"}`);
-        } else {
-            var  results = "";
-            astream.on('data', chunk => results += chunk);
-            astream.on('end', () => {
-                console.log(results);
-                data.schedule = JSON.parse(results);
-                res.send(JSON.stringify(data)).end();
-            });
-        }
+        client.ftp.get(bIDSec.replace('/', '--') + '.json', (err, astream) => {
+            if (err) {
+                console.log(err);
+                res.end(`{\"message": \"Not Found\"}`);
+            } else {
+                var results = "";
+                astream.on('data', chunk => results += chunk);
+                astream.on('end', () => {
+                    console.log(results);
+                    data.schedule = JSON.parse(results);
+                    res.send(JSON.stringify(data)).end();
+                });
+            }
 
-    })
+        });
+    });
 
 });
 
 app.post('/schedule/update', (req, res) => {
+    let password = req.body.password;
+    let form = new formidable.IncomingForm();
+    form.parse(req);
 
-    var password = req.body.password;
+    new formidable.IncomingForm().parse(req, (err, fields, files) => {
+        console.log(`password : ${fields.password}`);
+        console.log(fields);
+        password = fields.password;
 
-    console.log("Connected!\nPassword entered: " + password);
+        if (password === "M3kk0HzAfFvjdkBwXj") {
+            console.log("password matches");
+            console.log(files);
+            csv()
+                .fromFile(files.document.path)
+                .then((jsonObj) => {
+                    // console.log(jsonObj)
 
-    if (password == "M3kk0HzAfFvjdkBwXj"){
-        var schedule = {
-            scheduleType : req.body.scheduleType,
+                    console.log(jsonObj[3].PeriodNumber + ' ' + jsonObj[4].PeriodNumber + ' ' + jsonObj[4].SectionName + ' ' + jsonObj[4].RoomName + ' ' + jsonObj[4].CourseCode);
 
-            monday : {
-                firstClass : {
-                    title: req.body.mondayFirstClass,
-                    room: req.body.mondayFirstRoom
-                },
-                secondClass: {
-                    title: req.body.mondaySecondClass,
-                    room: req.body.mondaySecondRoom
-                },
-                thirdClass: {
-                    title: req.body.mondayThirdClass,
-                    room: req.body.mondayThirdRoom
-                },
-                fourthClass: {
-                    title: req.body.mondayFourthClass,
-                    room: req.body.mondayFourthRoom
-                }
-            },
-            tuesday: {
-                firstClass : {
-                    title: req.body.tuesdayFirstClass,
-                    room: req.body.tuesdayFirstRoom
-                },
-                secondClass: {
-                    title: req.body.tuesdaySecondClass,
-                    room: req.body.tuesdaySecondRoom
-                },
-                thirdClass: {
-                    title: req.body.tuesdayThirdClass,
-                    room: req.body.tuesdayThirdRoom
-                },
-                fourthClass: {
-                    title: req.body.tuesdayFourthClass,
-                    room: req.body.tuesdayFourthRoom
-                }
-            },
-            wednesday: {
-                firstClass : {
-                    title: req.body.wednesdayFirstClass,
-                    room: req.body.wednesdayFirstRoom
-                },
-                secondClass: {
-                    title: req.body.wednesdaySecondClass,
-                    room: req.body.wednesdaySecondRoom
-                },
-                thirdClass: {
-                    title: req.body.wednesdayThirdClass,
-                    room: req.body.wednesdayThirdRoom
-                },
-                fourthClass: {
-                    title: req.body.wednesdayFourthClass,
-                    room: req.body.wednesdayFourthRoom
-                }
-            },
-            thursday: {
-                firstClass : {
-                    title: req.body.thursdayFirstClass,
-                    room: req.body.thursdayFirstRoom
-                },
-                secondClass: {
-                    title: req.body.thursdaySecondClass,
-                    room: req.body.thursdaySecondRoom
-                },
-                thirdClass: {
-                    title: req.body.thursdayThirdClass,
-                    room: req.body.thursdayThirdRoom
-                },
-                fourthClass: {
-                    title: req.body.thursdayFourthClass,
-                    room: req.body.thursdayFourthRoom
-                }
-            },
-            friday: {
-                firstClass : {
-                    title: req.body.fridayFirstClass,
-                    room: req.body.fridayFirstRoom
-                },
-                secondClass: {
-                    title: req.body.fridaySecondClass,
-                    room: req.body.fridaySecondRoom
-                },
-                thirdClass: {
-                    title: req.body.fridayThirdClass,
-                    room: req.body.fridayThirdRoom
-                },
-                fourthClass: {
-                    title: req.body.fridayFourthClass,
-                    room: req.body.fridayFourthRoom
-                }
-            },
-            saturday: {
-                firstClass : {
-                    title: req.body.saturdayFirstClass,
-                    room: req.body.saturdayFirstRoom
-                },
-                secondClass: {
-                    title: req.body.saturdaySecondClass,
-                    room: req.body.saturdaySecondRoom
-                },
-                thirdClass: {
-                    title: req.body.saturdayThirdClass,
-                    room: req.body.saturdayThirdRoom
-                },
-                fourthClass: {
-                    title: req.body.saturdayFourthClass,
-                    room: req.body.saturdayFourthRoom
-                }
-            }
+                    client.ftp.cwd("schedules", (err, currDir) => {
+                        // if (err) console.log(err);
+                        console.log(currDir);
+
+                        var i;
+                        let listOfBatches = [];
+                        for (i = 0; i < jsonObj.length; i++) {
+                            let currBatch = jsonObj[i].SectionName;
+                            if (!listOfBatches.includes(currBatch)) {
+                                console.log(currBatch + " Pushed");
+                                listOfBatches.push(currBatch);
+
+                                let schedule = {
+                                    scheduleType: "",
+                                    monday: {
+                                        firstPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        secondPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        thirdPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fourthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fifthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        sixthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        }
+                                    },
+                                    tuesday: {
+                                        firstPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        secondPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        thirdPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fourthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fifthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        sixthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        }
+                                    },
+                                    wednesday: {
+                                        firstPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        secondPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        thirdPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fourthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fifthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        sixthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        }
+                                    },
+                                    thursday: {
+                                        firstPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        secondPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        thirdPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fourthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fifthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        sixthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        }
+                                    },
+                                    friday: {
+                                        firstPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        secondPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        thirdPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fourthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fifthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        sixthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        }
+                                    },
+                                    saturday: {
+                                        firstPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        secondPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        thirdPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fourthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        fifthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        },
+                                        sixthPeriod: {
+                                            Title: "",
+                                            Room: ""
+                                        }
+                                    }
+                                };
+                                var j;
+                                for (j = 0; j < jsonObj.length; j++) {
+                                    if (jsonObj[j].SectionName === currBatch) {
+                                        if (jsonObj[j].DayName === 'Mon') {
+                                            switch (jsonObj[j].PeriodNumber) {
+                                                case '1':
+                                                    schedule.monday.firstPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.monday.firstPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case 2:
+                                                    schedule.monday.secondPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.monday.secondPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case 3:
+                                                    schedule.monday.thirdPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.monday.thirdPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case 4:
+                                                    schedule.monday.fourthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.monday.fourthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case 5:
+                                                    schedule.monday.fifthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.monday.fifthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case 6:
+                                                    schedule.monday.sixthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.monday.sixthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                            }
+                                        }
+                                        else if (jsonObj[j].DayName === 'Tue') {
+                                            switch (jsonObj[j].PeriodNumber) {
+                                                case '1':
+                                                    schedule.tuesday.firstPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.tuesday.firstPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '2':
+                                                    schedule.tuesday.secondPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.tuesday.secondPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '3':
+                                                    schedule.tuesday.thirdPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.tuesday.thirdPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '4':
+                                                    schedule.tuesday.fourthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.tuesday.fourthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '5':
+                                                    schedule.tuesday.fifthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.tuesday.fifthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '6':
+                                                    schedule.tuesday.sixthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.tuesday.sixthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                            }
+                                        }
+                                        else if (jsonObj[j].DayName === 'Wed') {
+                                            switch (jsonObj[j].PeriodNumber) {
+                                                case '1':
+                                                    schedule.wednesday.firstPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.wednesday.firstPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '2':
+                                                    schedule.wednesday.secondPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.wednesday.secondPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '3':
+                                                    schedule.wednesday.thirdPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.wednesday.thirdPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '4':
+                                                    schedule.wednesday.fourthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.wednesday.fourthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '5':
+                                                    schedule.wednesday.fifthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.wednesday.fifthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '6':
+                                                    schedule.wednesday.sixthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.wednesday.sixthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                            }
+                                        }
+                                        else if (jsonObj[j].DayName === 'Thu') {
+                                            switch (jsonObj[j].PeriodNumber) {
+                                                case '1':
+                                                    schedule.thursday.firstPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.thursday.firstPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '2':
+                                                    schedule.thursday.secondPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.thursday.secondPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '3':
+                                                    schedule.thursday.thirdPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.thursday.thirdPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '4':
+                                                    schedule.thursday.fourthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.thursday.fourthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '5':
+                                                    schedule.thursday.fifthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.thursday.fifthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '6':
+                                                    schedule.thursday.sixthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.thursday.sixthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                            }
+                                        }
+                                        else if (jsonObj[j].DayName === 'Fri') {
+                                            switch (jsonObj[j].PeriodNumber) {
+                                                case '1':
+                                                    schedule.friday.firstPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.friday.firstPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '2':
+                                                    schedule.friday.secondPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.friday.secondPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '3':
+                                                    schedule.friday.thirdPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.friday.thirdPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '4':
+                                                    schedule.friday.fourthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.friday.fourthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '5':
+                                                    schedule.friday.fifthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.friday.fifthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '6':
+                                                    schedule.friday.sixthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.friday.sixthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                            }
+                                        }
+                                        else if (jsonObj[j].DayName === 'Sat') {
+                                            switch (jsonObj[j].PeriodNumber) {
+                                                case '1':
+                                                    schedule.saturday.firstPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.saturday.firstPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '2':
+                                                    schedule.saturday.secondPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.saturday.secondPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '3':
+                                                    schedule.saturday.thirdPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.saturday.thirdPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '4':
+                                                    schedule.saturday.fourthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.saturday.fourthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '5':
+                                                    schedule.saturday.fifthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.saturday.fifthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                                case '6':
+                                                    schedule.saturday.sixthPeriod.Title = jsonObj[j].CourseCode;
+                                                    schedule.saturday.sixthPeriod.Room = jsonObj[j].RoomName;
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                }
+                                schedule.scheduleType = fields.chooseScheduleType;
+                                console.log(schedule);
+
+                                client.ftp.put(JSON.stringify(schedule), currBatch.replace('/', '--') + '.json', (err) => {
+                                    // if (err) console.log(err);
+                                    console.log("Schedule for Batch:" + currBatch + " uploaded to folder: " + currDir);
+                                });
+
+                            }
+                        }
+                    });
+                    console.log(listOfBatches)
+
+                });
+
+            res.end('{"message": "OK"}');
+
+        } else {
+            console.log("password didn't match");
+            res.end("{\"message\": \"1420788507\"}");
         }
-
-        //TODO: Probably remove this code because it's now redundant.
-        // var fileLocation = path.join(__dirname, "/schedules/" + req.body.bidsec + ".json");
-
-        // fs.writeFile(fileLocation, JSON.stringify(schedule), (err) => {
-        //     if (err) return console.log(err);
-
-        //     console.log("Schedule for Batch:"+req.body.bidsec+" updated.");
-        // })
-
-        client.ftp.put(JSON.stringify(schedule), req.body.bidsec + '.json', (err) => {
-            if (err) console.log(err);
-            console.log("Schedule for Batch:"+req.body.bidsec+" uploaded/updated to the ftp server");
-        })
-        
-
-        res.redirect('/schedule/update/updated/success');
-
-    } else {
-        res.end("{\"message\": \"1420788507\"}");
-    }
-
-});
-
-app.get('/schedule/update/updated/success', (req, res) => {
-    res.end("<html> <head><title>Update/Add Success! </title></head>  <body> <h1> Successfully updated the the schedule!");
+    });
 });
 
 app.get('/schedule/update/interface/', (req, res) => {
-    res.sendFile(path.join(__dirname, "/views/index.html"))
-})
+    res.sendFile(path.join(__dirname, "/views/index1.html"))
+});
 
 app.set('port', port);
 

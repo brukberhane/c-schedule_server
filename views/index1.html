@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Schedules</title>
+</head>
+<body>
+
+    <form action="/schedule/update" method="post" enctype="multipart/form-data">
+        <label for="chooseScheduleType">Schedule Type</label>
+        <select id="chooseScheduleType" name="chooseScheduleType" class="chooseScheduleType">
+            <option value="tentative" name="scheduleType">Tentative</option>
+            <option value="revised" name="scheduleType">Revised</option>
+            <option value="updated" name="scheduleType">Updated</option>
+            <option value="final" name="scheduleType">Final</option>
+        </select>
+        <input type="file" name="document">
+        <input type="password" name="password">
+        <input type="submit">
+    </form>
+
+</body>
+</html>
