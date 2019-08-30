@@ -76,6 +76,25 @@ app.post('/schedule/update', (req, res) => {
                         // if (err) console.log(err);
                         console.log(currDir);
 
+                        client.ftp.get('lists.json', (err, stream) => {
+                            if (err) console.log(err);
+                            else {
+                                var results = "";
+                                astream.on('data', chunk => results += chunk);
+                                astream.on('end', () => {
+                                    console.log(results);
+                                    var array = JSON.parse(results)
+                                    let i;
+                                    for (i = 0; i < array.length; i++){
+                                        client.ftp.delete(array[i].replace('/', '--') + '.json', (err) => {
+                                            if (err) console.log(err);
+                                        });
+                                    }
+                                });
+                            }
+
+                        });
+
                         var i;
                         let listOfBatches = [];
                         for (i = 0; i < jsonObj.length; i++) {
@@ -427,7 +446,9 @@ app.post('/schedule/update', (req, res) => {
                             }
                         }
                     });
-                    console.log(listOfBatches)
+                    client.ftp.put(JSON.stringify(listOfBatches), 'list.json', (err) => {
+                        console.log(listOfBatches);
+                    });
 
                 });
 
