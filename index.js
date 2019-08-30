@@ -271,23 +271,23 @@ app.post('/schedule/update', (req, res) => {
                                                     schedule.monday.firstPeriod.Title = jsonObj[j].CourseCode;
                                                     schedule.monday.firstPeriod.Room = jsonObj[j].RoomName;
                                                     break;
-                                                case 2:
+                                                case '2':
                                                     schedule.monday.secondPeriod.Title = jsonObj[j].CourseCode;
                                                     schedule.monday.secondPeriod.Room = jsonObj[j].RoomName;
                                                     break;
-                                                case 3:
+                                                case '3':
                                                     schedule.monday.thirdPeriod.Title = jsonObj[j].CourseCode;
                                                     schedule.monday.thirdPeriod.Room = jsonObj[j].RoomName;
                                                     break;
-                                                case 4:
+                                                case '4':
                                                     schedule.monday.fourthPeriod.Title = jsonObj[j].CourseCode;
                                                     schedule.monday.fourthPeriod.Room = jsonObj[j].RoomName;
                                                     break;
-                                                case 5:
+                                                case '5':
                                                     schedule.monday.fifthPeriod.Title = jsonObj[j].CourseCode;
                                                     schedule.monday.fifthPeriod.Room = jsonObj[j].RoomName;
                                                     break;
-                                                case 6:
+                                                case '6':
                                                     schedule.monday.sixthPeriod.Title = jsonObj[j].CourseCode;
                                                     schedule.monday.sixthPeriod.Room = jsonObj[j].RoomName;
                                                     break;
