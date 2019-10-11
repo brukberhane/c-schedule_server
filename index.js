@@ -445,11 +445,13 @@ app.post('/schedule/update', (req, res) => {
 
                             }
                         }
-                    });
-                    client.ftp.put(JSON.stringify(listOfBatches), 'list.json', (err) => {
-                        console.log(listOfBatches);
-                    });
 
+                        client.ftp.put(JSON.stringify(listOfBatches), 'list.json', (err) => {
+                            console.log(listOfBatches);
+                        });
+                        
+                    });
+                    
                 });
 
             res.end('{"message": "OK"}');
