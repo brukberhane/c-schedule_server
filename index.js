@@ -18,7 +18,7 @@ client.connect(() => {
 const port = process.env.PORT || 6969;
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/schedule/get/:bIDSec', (req, res) => {
 
@@ -43,8 +43,23 @@ app.get('/schedule/get/:bIDSec', (req, res) => {
                 astream.on('end', () => {
                     console.log(results);
                     data.schedule = JSON.parse(results);
-                    res.send(JSON.stringify(data)).end();
+                    // res.send(JSON.stringify(data)).end();
+                    client.ftp.get(bIDSec.replace('/', '--') + "_course.json", (err1, cstream) => {
+                        if (err1) {
+                            console.log(err);
+                        } else {
+                            var courses;
+                            cstream.on('data', chunk => courses += chunk);
+                            cstream.on('end', () => {
+                                if (data.schedule !== null) {
+                                    data.courses = JSON.parse(courses);
+                                    res.send(JSON.stringify(data)).end();
+                                }
+                            });
+                        }
+                    });
                 });
+                
             }
 
         });
@@ -76,7 +91,7 @@ app.post('/schedule/update', (req, res) => {
                         // if (err) console.log(err);
                         console.log(currDir);
 
-                        client.ftp.get('lists.json', (err, stream) => {
+                        client.ftp.get('list.json', (err, stream) => {
                             if (err) console.log(err);
                             else {
                                 var results = "";
@@ -85,11 +100,18 @@ app.post('/schedule/update', (req, res) => {
                                     console.log(results);
                                     var array = JSON.parse(results)
                                     let i;
-                                    for (i = 0; i < array.length; i++){
+                                    for (i = 0; i < array.length; i++) {
                                         client.ftp.delete(array[i].replace('/', '--') + '.json', (err) => {
                                             if (err) console.log(err);
                                         });
+                                        client.ftp.delete(array[i].replace('/', '--') + '_course.json', (err1) => {
+                                            if (err1) console.log(err1);
+                                        });
                                     }
+                                });
+
+                                client.ftp.delete('list.json', (err) => {
+                                    if (err) console.log(err);
                                 });
                             }
 
@@ -98,10 +120,15 @@ app.post('/schedule/update', (req, res) => {
                         var i;
                         let listOfBatches = [];
                         for (i = 0; i < jsonObj.length; i++) {
+                            let listOfCourses = [];
+                            let courseArray = [];
+                            //NOTE: Starting here is for selectively getting every single batch and reiteratively getting their classes
                             let currBatch = jsonObj[i].SectionName;
                             if (!listOfBatches.includes(currBatch)) {
                                 console.log(currBatch + " Pushed");
                                 listOfBatches.push(currBatch);
+                                listOfCourses = [];
+                                courseArray = [];
 
                                 let schedule = {
                                     scheduleType: "",
@@ -433,6 +460,22 @@ app.post('/schedule/update', (req, res) => {
                                                     break;
                                             }
                                         }
+
+                                        let currCourse = jsonObj[j].CourseCode;
+                                        if (!listOfCourses.includes(currCourse)) {
+                                            console.log(currCourse + " Pushed");
+                                            listOfCourses.push(currCourse);
+
+                                            let courseObj = { CourseCode: "", CourseName: "", InstructorName: "" };
+                                            if (jsonObj[j].CourseCode === currCourse) {
+                                                courseObj.CourseCode = jsonObj[j].CourseCode;
+                                                courseObj.CourseName = jsonObj[j].CourseTitle;
+                                                courseObj.InstructorName = jsonObj[j].InstructorName;
+                                            }
+                                            courseArray.push(courseObj);
+
+                                        }
+
                                     }
                                 }
                                 schedule.scheduleType = fields.chooseScheduleType;
@@ -441,6 +484,9 @@ app.post('/schedule/update', (req, res) => {
                                 client.ftp.put(JSON.stringify(schedule), currBatch.replace('/', '--') + '.json', (err) => {
                                     // if (err) console.log(err);
                                     console.log("Schedule for Batch:" + currBatch + " uploaded to folder: " + currDir);
+                                });
+                                client.ftp.put(JSON.stringify(courseArray), currBatch.replace('/', '--') + '_course.json', (err) => {
+                                    console.log("Course list for Batch " + currBatch + " uploaded successfully");
                                 });
 
                             }
