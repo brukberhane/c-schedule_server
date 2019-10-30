@@ -91,7 +91,7 @@ app.post('/schedule/update', (req, res) => {
                         // if (err) console.log(err);
                         console.log(currDir);
 
-                        client.ftp.get('list.json', (err, stream) => {
+                        client.ftp.get('list.json', (err, astream) => {
                             if (err) console.log(err);
                             else {
                                 var results = "";
