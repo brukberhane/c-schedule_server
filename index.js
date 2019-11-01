@@ -41,16 +41,18 @@ app.get('/schedule/get/:bIDSec', (req, res) => {
                 var results = "";
                 astream.on('data', chunk => results += chunk);
                 astream.on('end', () => {
-                    console.log(results);
+                    console.log("results: " + results);
                     data.schedule = JSON.parse(results);
                     // res.send(JSON.stringify(data)).end();
                     client.ftp.get(bIDSec.replace('/', '--') + "_course.json", (err1, cstream) => {
                         if (err1) {
-                            console.log(err);
+                            console.log("Getting Course Error: " + err1);
+                            res.end(JSON.stringify(data));
                         } else {
-                            var courses;
+                            var courses = "";
                             cstream.on('data', chunk => courses += chunk);
                             cstream.on('end', () => {
+                                console.log("Course Results: " + courses)
                                 if (data.schedule !== null) {
                                     data.courses = JSON.parse(courses);
                                     res.send(JSON.stringify(data)).end();
