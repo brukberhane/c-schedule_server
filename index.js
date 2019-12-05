@@ -22,6 +22,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/schedule/get/:bIDSec', (req, res) => {
 
+    res.setTimeout(100 * 1000);
+
     const bIDSec = req.params.bIDSec;
     console.log(`Requesting schedule for ${bIDSec}`);
 
