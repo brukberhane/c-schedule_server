@@ -8,8 +8,8 @@ const formidable = require('formidable');
 
 var client = new ftpClient({
     host: 'ftp.drivehq.com',
-    user: 'brukberhane',
-    password: 'bruk@123456'
+    user: '<MY USERNAME FOR FTP>',
+    password: '<MY PASSWORD FOR FTP>'
 });
 client.connect(() => {
     console.log('connected the ftp server');
@@ -81,7 +81,7 @@ app.post('/schedule/update', (req, res) => {
         console.log(fields);
         password = fields.password;
 
-        if (password === "M3kk0HzAfFvjdkBwXj") {
+        if (password === "<MY PASSWORD FOR THE FORM>") {
             console.log("password matches");
             console.log(files);
             csv()

@@ -6,4 +6,4 @@
     "routes": [
         { "src": "/schedule/(.*)", "dest": "index.js"}
     ]
-}
+{
